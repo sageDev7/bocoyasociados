@@ -313,7 +313,7 @@ footer.site{background:#161e28;color:var(--w70);font-size:.92rem}
   .strip .body .acts{margin-bottom:26px}
   .pasos{grid-template-columns:1fr 1fr;gap:46px 0}
   .pasos::before{display:none}
-  .mono{max-width:300px;margin:0 auto}
+  .mono,.mono.photo{max-width:300px;width:100%;margin:0 auto}
   .statbar .wrap{grid-template-columns:repeat(2,1fr)}
   .fact:nth-child(3){border-left:0;padding-left:0}
   .fact:nth-child(n+3){border-top:1px solid var(--line)}
