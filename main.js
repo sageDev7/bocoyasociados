@@ -16,10 +16,6 @@
   document.getElementById("moverlay").addEventListener("click", closeMenu);
   document.querySelectorAll("#mnav a").forEach(function (a) { a.addEventListener("click", closeMenu); });
 
-  /* ---------- boceto: páginas internas todavía no construidas ---------- */
-  document.addEventListener("click", function (e) {
-    var l = e.target.closest('a[href="#"]'); if (l) e.preventDefault();
-  });
 
   /* ---------- áreas: franjas que se expanden (solo desktop) ---------- */
   var strips = Array.prototype.slice.call(document.querySelectorAll(".strip"));
@@ -70,9 +66,22 @@
   }
   backToTop.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); });
 
-  /* ---------- formulario (FormSubmit + modal) ---------- */
+  /* ---------- áreas: índice lateral que marca la sección visible ---------- */
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll(".area-nav a"));
+  if (navLinks.length && "IntersectionObserver" in window) {
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        navLinks.forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    navLinks.forEach(function (a) { var t = document.querySelector(a.getAttribute("href")); if (t) spy.observe(t); });
+  }
+
+  /* ---------- formulario (FormSubmit + modal), solo en el inicio ---------- */
   var form = document.getElementById("contactForm"), btn = document.getElementById("formSubmitBtn");
   var iframe = document.getElementById("formsubmit-iframe"), modal = document.getElementById("okModal"), sending = false;
+  if (form) {
   function validField(input) {
     var v = input.value.trim();
     var ok = v !== "" && (input.type !== "email" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
@@ -92,8 +101,9 @@
     sending = false; form.reset(); btn.disabled = false; btn.textContent = "Enviar consulta";
     modal.classList.add("show");
   });
-  function closeModal() { modal.classList.remove("show"); }
   modal.addEventListener("click", function (e) { if (e.target === modal || e.target.hasAttribute("data-close")) closeModal(); });
+  }
+  function closeModal() { if (modal) modal.classList.remove("show"); }
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeMenu(); closeModal(); } });
 
   document.getElementById("year").textContent = new Date().getFullYear();
